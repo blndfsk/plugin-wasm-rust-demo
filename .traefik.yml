@@ -1,0 +1,10 @@
+displayName: Demo Plugin Wasm Rust
+runtime: wasm
+type: middleware
+iconPath: .assets/icon.png
+
+summary: '[Demo WASM]'
+
+testData:
+  rules:
+    - "s:404 -> s:403"
