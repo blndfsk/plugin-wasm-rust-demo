@@ -1,7 +1,6 @@
 displayName: Demo Plugin Wasm Rust
 runtime: wasm
 type: middleware
-iconPath: .assets/icon.png
 
 summary: '[Demo WASM]'
 

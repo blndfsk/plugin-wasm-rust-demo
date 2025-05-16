@@ -1,7 +1,9 @@
 .PHONY: build clean
 
-plugin:
-	
+plugin: build
+	mkdir plugin
+	cp .traefik.yml plugin/
+	cp target/wasm32-wasip1/release/http-wasm-rust.wasm plugin/plugin.wasm
 
 build:
 	cargo build --target wasm32-wasip1 --release
