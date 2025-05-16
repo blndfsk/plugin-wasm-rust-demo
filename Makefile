@@ -3,6 +3,7 @@
 plugin: build
 	mkdir plugin
 	cp .traefik.yml plugin/
+	cp LICENSE plugin/
 	cp target/wasm32-wasip1/release/http-wasm-rust.wasm plugin/plugin.wasm
 
 build:
