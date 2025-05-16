@@ -18,9 +18,23 @@ jobs:
         target: wasm32-wasip1
     - name: Build
       run: make plugin
-    - name: Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: plugin/**
-      
+    
+    - name: Create draft release
+      run: |
+        set +e
+        echo "Creating release $VERSION"
+        gh release create $VERSION --draft --title "$VERSION"
+      env:
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ github.event.inputs.version }}
+
+    - name: Push build artifact to release
+      run: |
+        set +e
+        zip -j plugin/plugin-wasm-rust-demo-$VERSION.zip .traefik.yml plugin/plugin.wasm LICENSE
+        gh release upload $VERSION ./plugin/plugin-wasm-rust-demo-$VERSION.zip --clobber
+      env:
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ github.event.inputs.version }}
+
       
