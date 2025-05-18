@@ -1,5 +1,80 @@
 # plugin-wasm-rust-demo
 
-Demo Traefik plugin written in rust
+Demo Traefik plugin written in rust. Inspired by https://github.com/juliens/traefik-plugin-rust-demo
 
-https://http-wasm.io/http-handler-abi/
+## Examples
+set header and forward to the next middleware
+```rust
+    fn handle_request(&self, request: Request, _response: Response) -> (bool, i32) {
+        request.header().add("X-Foo".as_bytes(), "Bar".as_bytes());
+        (true, 0)
+    }
+```
+
+match uri and respond with error
+```rust
+    fn handle_request(&self, request: Request, response: Response) -> (bool, i32) {
+        match request.uri() {
+            Some(s) if s.starts_with("/.config".as_bytes()) => {
+                response.set_status_code(403);
+                return (false, 0);
+            }
+            _ => {}
+        }
+        (true, 0)
+    }
+```
+
+
+## Building
+
+if not already installed, add the wasm-target
+
+```shell
+rustup target add wasm32-wasip1
+```
+
+Build the plugin with
+
+```shell
+make
+```
+
+The artifacts are found in target/plugin/
+
+## Installation
+
+This Demo is not meant for installation, it is just a showcase. However, traefik supports a manual installation.
+
+```shell
+mkdir -p <traefik>/plugins-local/src/plugindemowasm/
+cp target/plugin/plugin.wasm <traefik>/plugins-local/src/plugindemowasm/
+
+```
+Configure the static configuration (and restart traefik)
+```yaml
+# Static configuration
+
+experimental:
+  localPlugins:
+    plugindemowasm:
+      moduleName: plugindemowasm
+```
+Call the middleware from one of your routers
+```yaml
+# Dynamic configuration
+
+http:
+  routers:
+    my-router:
+    [...]
+      middlewares:
+        - plugindemowasm-mw
+[...]
+  middlewares:
+    plugindemowasm-mw:
+      plugin:
+        plugindemowasm:
+          rules:
+            - ""
+```            

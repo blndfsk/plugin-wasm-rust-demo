@@ -19,10 +19,11 @@ jobs:
     - name: Build
       run: make plugin
     - name: Release
-      uses: actions/upload-artifact@v4
+      uses: softprops/action-gh-release@v2
       with:
-        name: plugin
-        path: target/plugin/**
-        include-hidden-files: true
+        files: |
+          target/plugin/plugin.wasm
+          target/plugin/.traefik.yml
+          target/plugin/LICENSE
 
       
