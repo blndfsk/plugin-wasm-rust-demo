@@ -1,5 +1,7 @@
 use http_wasm_guest::{
-    host::get_config, info, register, request::Request, response::Response, Guest,
+    feature::{enable_feature, Feature},
+    host::{get_config, Request, Response},
+    info, register, Guest,
 };
 use serde::Deserialize;
 
@@ -15,17 +17,15 @@ impl Guest for Plugin {
         info!("uri: {}", to_str(request.uri().as_deref()));
         (true, 0)
     }
-
-    fn handle_response(&self, _request: Request, _response: Response) {}
 }
 fn main() {
     let config: Config = get_config()
-        .and_then(|string| serde_json::from_slice(&string).ok())
+        .and_then(|v| serde_json::from_slice(&v).ok())
         .unwrap();
     info!("rules {:?}", &config.rules);
+    enable_feature(Feature::BufferRequest);
 
     let plugin = Plugin {};
-
     register(plugin);
 }
 
