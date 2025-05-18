@@ -21,9 +21,4 @@ jobs:
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
-        files: |
-          target/plugin/plugin.wasm
-          target/plugin/.traefik.yml
-          target/plugin/LICENSE
-
-      
+        files: target/plugin.zip

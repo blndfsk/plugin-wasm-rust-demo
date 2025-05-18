@@ -5,7 +5,7 @@ plugin: clean build
 	cp .traefik.yml target/plugin/
 	cp LICENSE target/plugin/
 	cp target/wasm32-wasip1/release/http-wasm-rust.wasm target/plugin/plugin.wasm
-
+	zip -rj target/plugin.zip target/plugin/
 build:
 	cargo build --target wasm32-wasip1 --release
 
