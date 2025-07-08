@@ -41,7 +41,7 @@ mod tests {
     #[test]
     fn test_config() {
         let json = r#"{ "rules" : ["^/\\.config"]}"#;
-        let vec = parse(&json).unwrap_or_else(|err| panic!("parse error: {}", err));
+        let vec = to_regexp(&json).unwrap_or_else(|err| panic!("parse error: {}", err));
         for r in &vec {
             assert!(r.is_match(r#"/.config"#), "regex: {}, ", r);
         }
