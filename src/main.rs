@@ -1,12 +1,11 @@
-use std::error::Error;
-
 use http_wasm_guest::{
-    host::{self, get_config, Request, Response},
+    host::{self, Request, Response},
     register, Guest,
 };
-use log::{error, info};
+use log::{info, Level};
 use regex::Regex;
-use serde::Deserialize;
+
+mod config;
 
 struct Plugin {
     pattern: Vec<Regex>,
@@ -25,34 +24,9 @@ impl Guest for Plugin {
     }
 }
 
-#[derive(Deserialize)]
-struct Config {
-    pub rules: Vec<String>,
-}
-
-fn config() -> Result<Config, Box<dyn Error>> {
-    let config: String = get_config()?;
-    Ok(serde_json::from_str(&config)?)
-}
-
 fn main() {
-    host::log::init().expect("no logging");
-    let config: Config = config().expect("No valid config");
-    info!("rules {:?}", &config.rules);
-
-    let regex = config
-        .rules
-        .iter()
-        .map(|string| Regex::new(string))
-        .filter(|res| match res {
-            Ok(_) => true,
-            Err(err) => {
-                error!("{}", err);
-                false
-            }
-        })
-        .map(|r| r.unwrap())
-        .collect();
+    host::log::init_with_level(Level::Debug).expect("no logging");
+    let regex = config::read().expect("valid config");
     let plugin = Plugin { pattern: regex };
     register(plugin);
 }
