@@ -6,4 +6,4 @@ summary: 'a starting point for a plugin written in rust'
 
 testData:
   rules:
-    - "s:404 -> s:403"
+    - "^/.config"

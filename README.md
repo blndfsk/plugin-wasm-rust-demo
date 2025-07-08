@@ -2,29 +2,7 @@
 
 Demo Traefik plugin written in rust. Inspired by https://github.com/juliens/traefik-plugin-rust-demo
 
-## Examples
-set header and forward to the next middleware
-```rust
-    fn handle_request(&self, request: Request, _response: Response) -> (bool, i32) {
-        request.header().add("X-Foo".as_bytes(), "Bar".as_bytes());
-        (true, 0)
-    }
-```
-
-match uri and respond with error
-```rust
-    fn handle_request(&self, request: Request, response: Response) -> (bool, i32) {
-        match request.uri() {
-            Some(s) if s.starts_with("/.config".as_bytes()) => {
-                response.set_status_code(403);
-                return (false, 0);
-            }
-            _ => {}
-        }
-        (true, 0)
-    }
-```
-
+This plugin filters incoming requests dependent on the configuration.
 
 ## Building
 
