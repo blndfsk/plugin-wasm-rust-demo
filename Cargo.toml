@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-http-wasm-guest = "0.5"
+http-wasm-guest = "0.6.1"
 log = "0.4"
 regex = "1.11"
 serde = { version = "1.0", features = ["derive"] }
