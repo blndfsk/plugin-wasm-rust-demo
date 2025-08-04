@@ -1,8 +1,7 @@
 use std::{borrow::Cow, error::Error, str::FromStr};
 
-use http_wasm_guest::host::get_config;
+use http_wasm_guest::host;
 
-use log::debug;
 use regex::Regex;
 use serde::Deserialize;
 
@@ -12,14 +11,13 @@ struct Config<'a> {
     rules: Vec<Cow<'a, str>>,
 }
 
-fn config() -> Result<String, Box<dyn Error>> {
-    let s = get_config()?;
-    debug!("config: {}", &s);
-    Ok(s)
+pub(crate) fn read() -> Result<Vec<Regex>, Box<dyn Error>> {
+    let bytes = host::config();
+    to_regexp(&bytes)
 }
 
-fn to_regexp(str: &str) -> Result<Vec<Regex>, Box<dyn Error>> {
-    let config: Config = serde_json::from_str(str)?;
+fn to_regexp(bytes: &[u8]) -> Result<Vec<Regex>, Box<dyn Error>> {
+    let config: Config = serde_json::from_slice(bytes)?;
     let result: Vec<Regex> = config
         .rules
         .iter()
@@ -30,25 +28,14 @@ fn to_regexp(str: &str) -> Result<Vec<Regex>, Box<dyn Error>> {
     Ok(result)
 }
 
-pub(crate) fn read() -> Result<Vec<Regex>, Box<dyn Error>> {
-    to_regexp(&config()?)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_config() {
-        let json = r#"{ "rules" : ["^/\\.config"]}"#;
-        let vec = to_regexp(&json).unwrap_or_else(|err| panic!("parse error: {}", err));
-        for r in &vec {
-            assert!(r.is_match(r#"/.config"#), "regex: {}, ", r);
-        }
-    }
-    #[test]
-    fn test_regexp() {
-        let regex = Regex::new(r"^/\.config").unwrap();
-        assert!(regex.is_match(r"/.config"));
+        let json = br#"{ "rules" : ["^/\\.config"]}"#;
+        let c = to_regexp(json).unwrap();
+        assert!(c.get(0).unwrap().is_match(r"/.config"));
     }
 }
