@@ -2,7 +2,7 @@
 
 Demo Traefik plugin written in rust. Inspired by https://github.com/juliens/traefik-plugin-rust-demo
 
-This plugin filters incoming requests dependent on the configuration.
+This plugin adds a header to the incoming request.
 
 ## Building
 
@@ -53,6 +53,5 @@ http:
     plugindemowasm-mw:
       plugin:
         plugindemowasm:
-          rules:
-            - ""
-```            
+          config: "empty"
+```

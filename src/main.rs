@@ -1,38 +1,22 @@
 use http_wasm_guest::{
+    Guest,
     host::{self, Request, Response},
-    register, Guest,
+    register,
 };
-use log::{error, info, Level};
-use regex::Regex;
+use log::{Level, info};
 
-mod config;
-
-struct Plugin {
-    pattern: Vec<Regex>,
-}
+struct Plugin {}
 
 impl Guest for Plugin {
-    fn handle_request(&self, request: Request, response: Response) -> (bool, i32) {
-        info!("req: {} {}", &request.method(), &request.uri());
-        info!("header: {:?}", &request.header().get());
-        for regex in &self.pattern {
-            match request.uri().to_str() {
-                Ok(uri) => {
-                    if regex.is_match(uri) {
-                        response.set_status(403);
-                        return (false, 0);
-                    }
-                }
-                Err(err) => error!("{}", err.to_string()),
-            }
-        }
+    fn handle_request(&self, request: &Request, _response: &Response) -> (bool, i32) {
+        info!("URI: {}", request.uri());
+        request.header().add(b"X-Foo", b"bar");
         (true, 0)
     }
 }
 
 fn main() {
-    host::log::init_with_level(Level::Debug).expect("no logging");
-    let regex = config::read().expect("no valid config");
-    let plugin = Plugin { pattern: regex };
+    host::log::init_with_level(Level::Debug).expect("unable to initialize logging");
+    let plugin = Plugin {};
     register(plugin);
 }
