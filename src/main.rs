@@ -16,7 +16,7 @@ impl Guest for Plugin {
 }
 
 fn main() {
-    host::log::init_with_level(Level::Debug).expect("unable to initialize logging");
+    let _ = host::admin::init_log_with_level(Level::Debug);
     let plugin = Plugin {};
     register(plugin);
 }

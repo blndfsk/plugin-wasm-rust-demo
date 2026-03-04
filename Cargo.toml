@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-http-wasm-guest = "0.9.1"
+http-wasm-guest = "0.10.0"
 log = "0.4"
