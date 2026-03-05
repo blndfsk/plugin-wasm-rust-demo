@@ -1,6 +1,6 @@
 use http_wasm_guest::{
-    Guest,
-    host::{self, Request, Response},
+    Guest, HostLogger,
+    host::{Request, Response},
     register,
 };
 use log::{Level, info};
@@ -16,7 +16,7 @@ impl Guest for Plugin {
 }
 
 fn main() {
-    let _ = host::admin::init_log_with_level(Level::Debug);
+    let _ = HostLogger::init_with_level(Level::Debug);
     let plugin = Plugin {};
     register(plugin);
 }
