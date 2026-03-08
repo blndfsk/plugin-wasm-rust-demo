@@ -4,5 +4,4 @@ type: middleware
 
 summary: "a starting point for a plugin written in rust"
 
-testData:
-  config: "not used"
+testData: {}

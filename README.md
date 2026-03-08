@@ -1,57 +1,45 @@
 # plugin-wasm-rust-demo
 
-Demo Traefik plugin written in rust. Inspired by https://github.com/juliens/traefik-plugin-rust-demo
+This repository demonstrates a Traefik plugin implemented in Rust using the [http-wasm-guest](https://crates.io/crates/http-wasm-guest)-crate.
+The plugin is designed to add a custom header to incoming HTTP requests.
 
-This plugin adds a header to the incoming request.
+## Build Instructions
 
-## Building
-
-if not already installed, add the wasm-target
+To build the plugin, ensure the WebAssembly target is installed:
 
 ```shell
 rustup target add wasm32-wasip1
 ```
 
-Build the plugin with
+Compile the plugin using:
 
 ```shell
-make
+cargo build --target wasm32-wasip1
 ```
 
-The artifacts are found in target/plugin/
+## Usage
 
-## Installation
+This project serves as a demonstration and is not intended for production deployment.
 
-This Demo is not meant for installation, it is just a showcase. However, traefik supports a manual installation.
+For testing and experimentation, utilize the included `run.sh` script. This script launches a Traefik container with the compiled plugin and connects the `whoami` service, configuring the plugin as a middleware.
+
+Testing the whoami Service
+
+Once the script is running, you can test the `whoami` service using `curl`:
 
 ```shell
-mkdir -p <traefik>/plugins-local/src/plugindemowasm/
-cp target/plugin/plugin.wasm <traefik>/plugins-local/src/plugindemowasm/
-
+curl http://whoami.localhost:8080/
 ```
-Configure the static configuration (and restart traefik)
-```yaml
-# Static configuration
 
-experimental:
-  localPlugins:
-    plugindemowasm:
-      moduleName: plugindemowasm
-```
-Call the middleware from one of your routers
-```yaml
-# Dynamic configuration
+This command sends a request to Traefik, which routes it to the `whoami` service. The plugin should add a custom header to the response. 
 
-http:
-  routers:
-    my-router:
-    [...]
-      middlewares:
-        - plugindemowasm-mw
-[...]
-  middlewares:
-    plugindemowasm-mw:
-      plugin:
-        plugindemowasm:
-          config: "empty"
-```
+### Prerequisites
+
+Before running the `run.sh` script, ensure the following dependencies are installed and properly configured:
+
+- **Podman**
+  - Install Podman for container and pod management ([installation guide](https://podman.io/getting-started/installation))
+  - Ensure Podman is configured to run containers and pods
+
+- **Buildah**
+  - Install Buildah for building container images ([installation guide](https://github.com/containers/buildah/blob/main/install.md))
