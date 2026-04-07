@@ -4,9 +4,9 @@ version = 4
 
 [[package]]
 name = "http-wasm-guest"
-version = "0.10.1"
+version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89189552bfead155d13d02e69701e09350786c5653cb672f8e162ee5c709dfc6"
+checksum = "5421837dbfba95a925be8b85a5e7e15041f60f4fdcaca4828547af8cd0774ce5"
 dependencies = [
  "log",
 ]
