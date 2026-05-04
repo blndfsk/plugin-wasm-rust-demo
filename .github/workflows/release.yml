@@ -17,18 +17,16 @@ jobs:
         with:
           target: wasm32-wasip1
 
-      - name: Build plugin
+      - name: Build
         run: cargo build --target wasm32-wasip1 --release
 
-      - name: Prepare plugin directory
+      - name: Prepare Files
         run: |
           mkdir -p target/plugin
           cp .traefik.yml target/plugin/
           cp LICENSE target/plugin/
           cp target/wasm32-wasip1/release/http-wasm-rust-demo.wasm target/plugin/plugin.wasm
-
-      - name: Zip plugin directory
-        run: zip -rj target/plugin.zip target/plugin/
+          zip -rj target/plugin.zip target/plugin/
 
       - name: Release
         uses: softprops/action-gh-release@v2

@@ -3,6 +3,7 @@ set -xeu -o pipefail
 
 cargo build --target wasm32-wasip1
 
+plugin=http-wasm-rust-demo
 pod=$(podman pod create -p 8080:8080)
 
 function cleanup()
@@ -12,7 +13,6 @@ function cleanup()
 }
 trap 'cleanup' EXIT HUP INT TERM
 
-plugin=http-wasm-rust-demo
 TRAEFIK_ROOT=/opt/traefik
 ROOT_DIR=$TRAEFIK_ROOT/plugins-local/src/$plugin
 
@@ -22,7 +22,6 @@ buildah copy $container .traefik.yml $ROOT_DIR/.traefik.yml
 buildah config --workingdir $TRAEFIK_ROOT $container
 buildah commit $container localhost/$plugin
 buildah rm $container
-
 
 podman run -d --pod $pod --replace --name whoami \
     --label 'traefik.http.routers.whoami.rule=Host(`whoami.localhost`)' \
@@ -37,5 +36,4 @@ podman run -d --pod $pod --replace --name whoami \
 podman run -it --rm --pod $pod \
     --volume /run/user/${UID}/podman/podman.sock:/var/run/docker.sock \
     localhost/$plugin --entrypoints.web.address=:8080 --providers.docker=true --log.level=INFO \
-    --experimental.localplugins.$plugin.modulename=$plugin \
-    --experimental.localplugins.$plugin.settings.mounts=$ROOT_DIR/config/
+    --experimental.localplugins.$plugin.modulename=$plugin
